@@ -1,0 +1,130 @@
+package com.studentpay.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
+
+    @NotNull
+    @Column(precision = 10, scale = 2)
+    private BigDecimal amount;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TransactionCategory category;
+
+    private String description;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+
+    @Column(name = "recipient_id")
+    private UUID recipientId;
+
+    @Column(name = "recipient_upi_id")
+    private String recipientUpiId;
+
+    @Column(name = "upi_transaction_id")
+    private String upiTransactionId;
+
+    @Column(name = "payment_gateway")
+    private String paymentGateway;
+
+    @Column(name = "gateway_transaction_id")
+    private String gatewayTransactionId;
+
+    @Column(columnDefinition = "jsonb")
+    private String metadata;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    // Enums
+    public enum TransactionType {
+        CREDIT, DEBIT
+    }
+
+    public enum TransactionCategory {
+        TRANSFER, PAYMENT, TOPUP, MESS, LIBRARY, EVENTS, EXAM, STATIONERY, HOSTEL
+    }
+
+    public enum TransactionStatus {
+        PENDING, SUCCESS, FAILED, CANCELLED
+    }
+
+    // Constructors
+    public Transaction() {}
+
+    public Transaction(User user, TransactionType type, BigDecimal amount, 
+                      TransactionCategory category, String description) {
+        this.user = user;
+        this.type = type;
+        this.amount = amount;
+        this.category = category;
+        this.description = description;
+        this.status = TransactionStatus.PENDING;
+    }
+
+    // Getters and Setters
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public TransactionType getType() { return type; }
+    public void setType(TransactionType type) { this.type = type; }
+
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
+
+    public TransactionCategory getCategory() { return category; }
+    public void setCategory(TransactionCategory category) { this.category = category; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public TransactionStatus getStatus() { return status; }
+    public void setStatus(TransactionStatus status) { this.status = status; }
+
+    public UUID getRecipientId() { return recipientId; }
+    public void setRecipientId(UUID recipientId) { this.recipientId = recipientId; }
+
+    public String getRecipientUpiId() { return recipientUpiId; }
+    public void setRecipientUpiId(String recipientUpiId) { this.recipientUpiId = recipientUpiId; }
+
+    public String getUpiTransactionId() { return upiTransactionId; }
+    public void setUpiTransactionId(String upiTransactionId) { this.upiTransactionId = upiTransactionId; }
+
+    public String getPaymentGateway() { return paymentGateway; }
+    public void setPaymentGateway(String paymentGateway) { this.paymentGateway = paymentGateway; }
+
+    public String getGatewayTransactionId() { return gatewayTransactionId; }
+    public void setGatewayTransactionId(String gatewayTransactionId) { this.gatewayTransactionId = gatewayTransactionId; }
+
+    public String getMetadata() { return metadata; }
+    public void setMetadata(String metadata) { this.metadata = metadata; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+}
